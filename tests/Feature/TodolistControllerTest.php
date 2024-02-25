@@ -2,31 +2,29 @@
 
 namespace Tests\Feature;
 
+use Database\Seeders\TodoSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
 class TodolistControllerTest extends TestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+        DB::delete('delete from todos');
+    }
     public function testTodolist()
     {
+        $this->seed(TodoSeeder::class);
         $this->withSession([
-            'user' => 'Samsul',
-            'todolist' => [
-                [
-                    'id' => '1',
-                    'todo' => 'Samsul'
-                ],
-                [
-                    'id' => '2',
-                    'todo' => 'Rohman'
-                ]
-            ]
+            'user' => 'Samsul'
         ])->get('todolist')
             ->assertSeeText("1")
-            ->assertSeeText("Samsul")
+            ->assertSeeText("Makan")
             ->assertSeeText("2")
-            ->assertSeeText("Rohman");
+            ->assertSeeText("Minum");
     }
 
     public function testAddTodolistFailed()
